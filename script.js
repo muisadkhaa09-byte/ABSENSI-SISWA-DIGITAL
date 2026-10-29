@@ -239,3 +239,39 @@ document.getElementById("saveButton").addEventListener("click", () => {
 });
 
 updateClassOptions();
+
+function showPage(pageId) {
+  // Sembunyikan semua halaman
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.remove("active");
+  });
+
+  // Tampilkan halaman yang dipilih
+  const selectedPage = document.getElementById(pageId);
+
+  if (selectedPage) {
+    selectedPage.classList.add("active");
+  }
+
+  // Tandai menu yang aktif
+  document.querySelectorAll(".nav-link").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.page === pageId
+    );
+  });
+}
+
+// Navigasi menu sidebar
+document.querySelectorAll(".nav-link").forEach(button => {
+  button.addEventListener("click", () => {
+    showPage(button.dataset.page);
+  });
+});
+
+// Tombol untuk kembali ke dashboard
+document.querySelectorAll("[data-go]").forEach(button => {
+  button.addEventListener("click", () => {
+    showPage(button.dataset.go);
+  });
+});
