@@ -1,4 +1,12 @@
+import { db } from "./firebase-config.js";
 
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 const $ = id => document.getElementById(id);
 
 const CLASS_OPTIONS = {
@@ -38,9 +46,55 @@ function load(key, fallback) {
   }
 }
 
-function saveData() {
+let cloudReady = false;
+
+async function syncCollection(collectionName, items, getId) {
+  const collectionRef = collection(db, collectionName);
+  const snapshot = await getDocs(collectionRef);
+
+  const localIds = new Set(items.map(getId));
+
+  // Hapus dokumen cloud yang sudah dihapus dari data lokal
+  for (const cloudDoc of snapshot.docs) {
+    if (!localIds.has(cloudDoc.id)) {
+      await deleteDoc(cloudDoc.ref);
+    }
+  }
+
+  // Tambahkan atau perbarui dokumen di cloud
+  for (const item of items) {
+    await setDoc(doc(collectionRef, getId(item)), item);
+  }
+}
+
+async function saveData() {
+  // Tetap simpan di browser sebagai cadangan
   localStorage.setItem(STUDENT_KEY, JSON.stringify(students));
   localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(attendance));
+
+  if (!cloudReady) return;
+
+  try {
+    await syncCollection(
+      "students",
+      students,
+      student => student.id
+    );
+
+    await syncCollection(
+      "attendance",
+      attendance,
+      record => `${record.studentId}_${record.date}`
+    );
+
+    console.log("Data siswa dan absensi berhasil disinkronkan.");
+  } catch (error) {
+    console.error("Gagal menyinkronkan Firestore:", error);
+    alert(
+      "Data tersimpan di browser, tetapi gagal disinkronkan ke Firebase. " +
+      "Periksa koneksi dan aturan keamanan Firestore."
+    );
+  }
 }
 
 function today() {
@@ -441,10 +495,49 @@ $("resetDemo").addEventListener("click", () => {
   alert("Data contoh berhasil dipulihkan.");
 });
 
-function initialize() {
+async function initialize() {
   $("dashDate").value = today();
   $("attDate").value = today();
   $("reportMonth").value = currentMonth();
+
+  try {
+    // Ambil data dari Firestore
+    const [studentSnapshot, attendanceSnapshot] =
+      await Promise.all([
+        getDocs(collection(db, "students")),
+        getDocs(collection(db, "attendance"))
+      ]);
+
+    const cloudStudents = studentSnapshot.docs.map(item => ({
+      ...item.data(),
+      id: item.id
+    }));
+
+    const cloudAttendance = attendanceSnapshot.docs.map(item =>
+      item.data()
+    );
+
+    // Jika cloud sudah berisi data, gunakan data cloud.
+    // Jika masih kosong, pertahankan data browser yang ada.
+    students = cloudStudents.length
+      ? cloudStudents
+      : load(STUDENT_KEY, DEMO_STUDENTS);
+
+    attendance = cloudAttendance.length
+      ? cloudAttendance
+      : load(ATTENDANCE_KEY, []);
+
+    cloudReady = true;
+
+    // Simpan/migrasikan data awal ke Firestore
+    await saveData();
+
+    console.log("Data berhasil dimuat dari Firebase.");
+  } catch (error) {
+    cloudReady = false;
+    console.error("Firebase belum bisa diakses:", error);
+    console.warn("Website menggunakan data lokal untuk sementara.");
+  }
 
   refreshAllSelects();
   renderDashboard();
@@ -452,7 +545,6 @@ function initialize() {
   renderStudents();
   renderReport();
 }
-
 initialize();
 
 const SUBJECT_KEY = "e_absensi_v2_subject";
