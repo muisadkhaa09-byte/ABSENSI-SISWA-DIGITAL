@@ -249,6 +249,7 @@ function showPage(pageId) {
     dashboard: "Dashboard",
     attendance: "Isi Absensi",
     students: "Data Siswa",
+    subjects: "pilihan mata pelajaran",
     reports: "Rekap Absensi"
   };
 
