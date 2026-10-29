@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#176b45">
+  <title>E-Absensi Plus Alfalah Almakky</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">A</div>
+      <div>
+        <h1>E-Absensi Alfalah</h1>
+        <p>SMP & SMA Plus Alfalah Almakky</p>
+      </div>
+    </div>
+    <span class="demo-badge">MODE DEMO</span>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="menu-label">MENU UTAMA</p>
+      <button class="nav-link active" data-page="dashboard">
+        ▦ Dashboard
+      </button>
+      <button class="nav-link" data-page="attendance">
+        ✓ Isi Absensi
+      </button>
+      <button class="nav-link" data-page="students">
+        ♙ Data Siswa
+      </button>
+      <button class="nav-link" data-page="reports">
+        ▤ Rekap Absensi
+      </button>
+
+      <div class="sidebar-note">
+        <strong>Informasi</strong>
+        <p>Versi awal untuk uji coba tampilan. Login dan database belum aktif.</p>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section id="dashboard" class="page active">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">SISTEM KEHADIRAN SEKOLAH</p>
+            <h2>Dashboard Absensi</h2>
+            <p class="muted">
+              Pilih jenjang dan kelas untuk mulai mengisi absensi.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Pilih Kelas</h3>
+          <div class="filters">
+            <label>
+              Jenjang Sekolah
+              <select id="levelSelect">
+                <option value="SMP">SMP</option>
+                <option value="SMA">SMA</option>
+              </select>
+            </label>
+
+            <label>
+              Kelas
+              <select id="classSelect"></select>
+            </label>
+
+            <label>
+              Tanggal Absensi
+              <input id="attendanceDate" type="date">
+            </label>
+          </div>
+          <p class="hint">
+            Daftar di bawah adalah data contoh, bukan data asli sekolah.
+          </p>
+        </div>
+
+        <div class="summary-grid">
+          <article class="summary-card">
+            <span>Total Siswa</span>
+            <strong id="totalCount">0</strong>
+          </article>
+          <article class="summary-card present">
+            <span>Hadir</span>
+            <strong id="presentCount">0</strong>
+          </article>
+          <article class="summary-card sick">
+            <span>Sakit</span>
+            <strong id="sickCount">0</strong>
+          </article>
+          <article class="summary-card permission">
+            <span>Izin</span>
+            <strong id="permissionCount">0</strong>
+          </article>
+          <article class="summary-card absent">
+            <span>Alpa</span>
+            <strong id="absentCount">0</strong>
+          </article>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading">
+            <div>
+              <h3>Daftar Kehadiran Siswa</h3>
+              <p class="muted" id="classDescription"></p>
+            </div>
+            <button class="button secondary" id="resetButton">
+              Reset Demo
+            </button>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Nama Siswa</th>
+                  <th>Status Kehadiran</th>
+                </tr>
+              </thead>
+              <tbody id="studentTable"></tbody>
+            </table>
+          </div>
+
+          <div class="save-area">
+            <p id="saveMessage" role="status">
+              Belum ada perubahan yang disimpan.
+            </p>
+            <button class="button primary" id="saveButton">
+              Simpan Demo
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="attendance" class="page">
+        <div class="panel">
+          <h2>Isi Absensi</h2>
+          <p>Pengisian absensi dilakukan melalui Dashboard pada versi awal.</p>
+          <button class="button primary" data-go="dashboard">
+            Buka Dashboard
+          </button>
+        </div>
+      </section>
+
+      <section id="students" class="page">
+        <div class="panel">
+          <h2>Data Siswa</h2>
+          <p>
+            Pada tahap berikutnya, admin akan dapat menambah, mengubah,
+            dan mengelola data siswa dari database.
+          </p>
+        </div>
+      </section>
+
+      <section id="reports" class="page">
+        <div class="panel">
+          <h2>Rekap Absensi</h2>
+          <p>
+            Ringkasan di Dashboard saat ini dihitung dari data contoh.
+            Laporan permanen akan dibuat setelah Firebase terhubung.
+          </p>
+          <button class="button primary" data-go="dashboard">
+            Lihat Ringkasan
+          </button>
+        </div>
+      </section>
+
+      <footer>
+        <p>© 2026 E-Absensi Plus Alfalah Almakky</p>
+        <p>Prototipe pengembangan — bukan sistem absensi resmi.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
