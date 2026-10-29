@@ -454,3 +454,21 @@ function initialize() {
 }
 
 initialize();
+
+const SUBJECT_KEY = "e_absensi_v2_subject";
+const subjectSelect = document.getElementById("subjectSelect");
+const saveSubjectButton = document.getElementById("saveSubject");
+const subjectMessage = document.getElementById("subjectMessage");
+
+// Pulihkan pilihan terakhir
+const savedSubject = localStorage.getItem(SUBJECT_KEY);
+if (savedSubject) {
+  subjectSelect.value = savedSubject;
+}
+
+// Simpan pilihan mata pelajaran
+saveSubjectButton.addEventListener("click", () => {
+  localStorage.setItem(SUBJECT_KEY, subjectSelect.value);
+  subjectMessage.textContent =
+    "Mata pelajaran terpilih: " + subjectSelect.value;
+});
